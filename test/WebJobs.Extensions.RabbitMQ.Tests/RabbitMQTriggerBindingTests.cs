@@ -46,7 +46,8 @@ namespace WebJobs.Extensions.RabbitMQ.Tests
             byte[] body = new byte[10];
             rand.NextBytes(body);
 
-            data.Add("Body", body);
+            var readOnlyMemory = new ReadOnlyMemory<byte>(body);
+            data.Add("Body", readOnlyMemory);
 
             BasicDeliverEventArgs eventArgs = new BasicDeliverEventArgs("ConsumerName", deliveryTag, false, "n/a", "QueueName", null, body);
             data.Add("Exchange", eventArgs.Exchange);
@@ -54,9 +55,9 @@ namespace WebJobs.Extensions.RabbitMQ.Tests
 
             var actualContract = RabbitMQTriggerBinding.CreateBindingData(eventArgs);
 
-            foreach (KeyValuePair<string, Object> item in actualContract)
+            foreach (var (key, value) in actualContract)
             {
-                Assert.Equal(data[item.Key], item.Value);
+                Assert.Equal(data[key], value);
             }
         }
     }

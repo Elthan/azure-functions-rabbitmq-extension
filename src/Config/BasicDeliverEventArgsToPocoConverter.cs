@@ -20,7 +20,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.RabbitMQ
 
         public T Convert(BasicDeliverEventArgs arg)
         {
-            string body = Encoding.UTF8.GetString(arg.Body);
+            string body = Encoding.UTF8.GetString(arg.Body.ToArray());
             JToken jsonObj = JToken.Parse(body);
 
             return jsonObj.ToObject<T>();

@@ -60,7 +60,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.RabbitMQ
                     _configuration));
 
             // Converts BasicDeliverEventArgs to string so user can extract received message.
-            triggerRule.AddConverter<BasicDeliverEventArgs, string>(args => Encoding.UTF8.GetString(args.Body))
+            triggerRule.AddConverter<BasicDeliverEventArgs, string>(args => Encoding.UTF8.GetString(args.Body.ToArray()))
                 .AddConverter<BasicDeliverEventArgs, DirectInvokeString>((args) => new DirectInvokeString(null));
 
             // Convert BasicDeliverEventArgs --> string-- > JSON-- > POCO
