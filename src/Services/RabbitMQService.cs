@@ -70,7 +70,17 @@ namespace Microsoft.Azure.WebJobs.Extensions.RabbitMQ
                 args[Constants.DeadLetterRoutingKey] = Constants.DeadLetterRoutingKeyValue;
             }
 
-            //_model.QueueDeclare(queue: _queueName, durable: false, exclusive: false, autoDelete: false, arguments: args);
+            try
+            {
+                // Check if the queue exists, if not create it.
+                var connectionFactory = GetConnectionFactory(_connectionString, _hostName, _userName, _password, _port);
+                var model = connectionFactory.CreateConnection().CreateModel();
+                model.QueueDeclarePassive(queueName);
+            }
+            catch (RabbitMQClientException)
+            {
+                _model.QueueDeclare(queue: _queueName, durable: false, exclusive: false, autoDelete: false, arguments: args);
+            }
 
             _batch = _model.CreateBasicPublishBatch();
         }
