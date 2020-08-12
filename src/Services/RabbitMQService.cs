@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Exceptions;
 
 namespace Microsoft.Azure.WebJobs.Extensions.RabbitMQ
 {
@@ -55,7 +56,6 @@ namespace Microsoft.Azure.WebJobs.Extensions.RabbitMQ
 
             _deadLetterExchangeName = deadLetterExchangeName;
             _queueName = queueName ?? throw new ArgumentNullException(nameof(queueName));
-
             Dictionary<string, object> args = new Dictionary<string, object>();
 
             // Create dead letter queue
@@ -70,7 +70,8 @@ namespace Microsoft.Azure.WebJobs.Extensions.RabbitMQ
                 args[Constants.DeadLetterRoutingKey] = Constants.DeadLetterRoutingKeyValue;
             }
 
-            _model.QueueDeclare(queue: _queueName, isDurable, exclusive: false, autoDelete: false, arguments: args);
+            //_model.QueueDeclare(queue: _queueName, durable: false, exclusive: false, autoDelete: false, arguments: args);
+
             _batch = _model.CreateBasicPublishBatch();
         }
 
